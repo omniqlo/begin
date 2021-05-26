@@ -1,0 +1,16 @@
+{
+  "required": [
+    "name",
+    "version"
+  ],
+  "sortToTop": [
+    "name",
+    "version",
+    "private",
+    "description",
+    "author",
+    "license",
+    "main",
+    "types"
+  ]
+}

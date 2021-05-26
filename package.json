@@ -1,0 +1,54 @@
+{
+  "name": "begin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CLI to set up my personal projects",
+  "author": "omniqlo",
+  "license": "BSD-3-Clause",
+  "bin": "./src/index.js",
+  "bugs": {
+    "url": "https://github.com/omniqlo/begin/issues"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.3",
+    "fs-extra": "^10.0.0",
+    "inquirer": "^8.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.3",
+    "fixpack": "^4.0.0",
+    "husky": "^6.0.0",
+    "is-ci": "^3.0.0",
+    "lint-staged": "^11.0.0",
+    "npm-run-all": "^4.1.5",
+    "pkg-ok": "^2.3.1",
+    "prettier": "^2.3.0"
+  },
+  "homepage": "https://github.com/omniqlo/begin#readme",
+  "lint-staged": {
+    "package.json": "fixpack",
+    "*.{js}": "eslint --fix",
+    "*.{css,graphql,html,js,json,jsx,less,md,mdx,scss,ts,tsx,vue,yaml,yml}": "prettier --write"
+  },
+  "prettier": {
+    "bracketSpacing": false,
+    "quoteProps": "consistent",
+    "trailingComma": "all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omniqlo/begin.git"
+  },
+  "scripts": {
+    "clean": "rm -rf node_modules",
+    "format": "prettier --loglevel=error --write .",
+    "format:check": "prettier --list-different .",
+    "lint": "eslint --ext .js .",
+    "postinstall": "is-ci || husky install",
+    "setup": "yarn install && npm run validate",
+    "validate": "run-s format:check lint"
+  }
+}
