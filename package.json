@@ -46,9 +46,9 @@
     "clean": "rm -rf node_modules",
     "format": "prettier --loglevel=error --write .",
     "format:check": "prettier --list-different .",
+    "husky": "is-ci || husky install",
     "lint": "eslint --ext .js .",
-    "postinstall": "is-ci || husky install",
-    "setup": "yarn install && npm run validate",
+    "setup": "yarn install && run-s husky validate",
     "validate": "run-s format:check lint"
   }
 }
