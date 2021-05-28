@@ -2,7 +2,7 @@
   "name": "begin",
   "version": "0.1.0",
   "private": true,
-  "description": "CLI to set up my personal projects",
+  "description": "A CLI to set up my personal projects",
   "author": "omniqlo",
   "license": "BSD-3-Clause",
   "bin": "./src/index.js",
