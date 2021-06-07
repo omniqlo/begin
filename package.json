@@ -19,6 +19,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.23.3",
+    "eslint-watch": "^7.0.0",
     "fixpack": "^4.0.0",
     "husky": "^6.0.0",
     "is-ci": "^3.0.0",
@@ -47,7 +48,9 @@
     "format": "prettier --loglevel=error --write .",
     "format:check": "prettier --list-different .",
     "husky": "is-ci || husky install",
-    "lint": "eslint --ext .js .",
+    "lint": "esw --ext .js .",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:watch": "npm run lint -- -w",
     "setup": "yarn install && run-s husky validate",
     "validate": "run-s format:check lint"
   }

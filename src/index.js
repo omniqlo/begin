@@ -206,7 +206,11 @@ async function run() {
 
 		// ESLint
 		if (tools.includes(constants.eslint)) {
-			devDependenciesToInstall.push("eslint", "eslint-plugin-import");
+			devDependenciesToInstall.push(
+				"eslint",
+				"eslint-plugin-import",
+				"eslint-watch",
+			);
 			if (useTs) {
 				devDependenciesToInstall.push(
 					"@typescript-eslint/eslint-plugin",
@@ -261,7 +265,9 @@ async function run() {
 				: targetBrowser
 				? ".js,.jsx,.ts,.tsx"
 				: ".js,.ts";
-			scriptsToAdd.lint = `eslint --ext ${extensions} .`;
+			scriptsToAdd.lint = `esw --ext ${extensions} .`;
+			scriptsToAdd["lint:fix"] = "npm run lint -- --fix";
+			scriptsToAdd["lint:watch"] = "npm run lint -- -w";
 			const eslintIgnorePath = resolve(cwd, ".eslintignore");
 			fs.ensureFileSync(eslintIgnorePath);
 			if (useTs && targetBrowser) {
