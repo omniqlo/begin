@@ -25,7 +25,7 @@ $ npm run setup # or yarn setup
 
 [BSD-3-Clause](https://github.com/omniqlo/begin/blob/main/LICENSE)
 
-[build-badge]: https://img.shields.io/github/workflow/status/omniqlo/begin/Test?logo=github&style=flat-square
-[build]: https://github.com/omniqlo/begin/actions/workflows/test.yml
+[build-badge]: https://img.shields.io/github/workflow/status/omniqlo/begin/Validate?logo=github&style=flat-square
+[build]: https://github.com/omniqlo/begin/actions/workflows/validate.yml
 [license-badge]: https://img.shields.io/github/license/omniqlo/begin?style=flat-square
 [license]: https://github.com/omniqlo/begin/blob/main/LICENSE
