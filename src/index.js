@@ -171,7 +171,7 @@ async function run() {
 		}
 		if (tools.includes(constants.jest)) {
 			hasValidate = true;
-			validate += " test";
+			validate += ' "test -- {@}" --';
 		}
 		if (hasValidate) {
 			devDependenciesToInstall.push("npm-run-all");
@@ -209,6 +209,7 @@ async function run() {
 			devDependenciesToInstall.push(
 				"eslint",
 				"eslint-plugin-import",
+				"eslint-plugin-promise",
 				"eslint-watch",
 			);
 			if (useTs) {
@@ -219,6 +220,9 @@ async function run() {
 				copySync("tsconfig.eslint.json");
 			} else if (useJs) {
 				devDependenciesToInstall.push("eslint-config-airbnb-base");
+			}
+			if (tools.includes(constants.jest)) {
+				devDependenciesToInstall.push("eslint-plugin-jest");
 			}
 			if (tools.includes(constants.prettier)) {
 				devDependenciesToInstall.push("eslint-config-prettier");
@@ -231,31 +235,49 @@ async function run() {
 						? [
 								"plugin:@typescript-eslint/recommended",
 								"airbnb-typescript/base",
+								"plugin:promise/recommended",
 								"prettier",
 						  ]
 						: [
 								"plugin:@typescript-eslint/recommended",
 								"airbnb-typescript/base",
+								"plugin:promise/recommended",
 						  ]
 					: tools.includes(constants.prettier)
-					? ["airbnb-base", "prettier"]
-					: ["airbnb-base"],
+					? ["airbnb-base", "plugin:promise/recommended", "prettier"]
+					: ["airbnb-base", "plugin:promise/recommended"],
+				plugins: tools.includes(constants.jest)
+					? ["jest", "promise"]
+					: ["promise"],
+				env: {
+					"browser": targetBrowser || undefined,
+					"node": targetNode || undefined,
+					"jest/globals": tools.includes(constants.jest) || undefined,
+				},
 				parserOptions: useTs
 					? {
 							project: "./tsconfig.eslint.json",
 							tsconfigRootDir: "__dirname",
 					  }
 					: undefined,
-				env: {
-					browser: targetBrowser || undefined,
-					node: targetNode || undefined,
-					jest: tools.includes(constants.jest) || undefined,
-				},
+				rules: {},
+				overrides: [
+					tools.includes(constants.jest)
+						? {
+								files: [
+									"**/__tests__/**/*.[jt]s?(x)",
+									"**/?(*.)+(spec|test).[jt]s?(x)",
+								],
+								extends: ["plugin:jest/recommended"],
+						  }
+						: undefined,
+				],
 			};
 			const eslintConfigPath = resolve(cwd, ".eslintrc.js");
 			fs.outputFileSync(
 				eslintConfigPath,
-				`module.exports = ${JSON.stringify(eslintConfig)}`,
+				`// https://eslint.org/docs/user-guide/configuring
+				module.exports = ${JSON.stringify(eslintConfig)}`,
 			);
 			/* eslint-disable-next-line no-nested-ternary */
 			const extensions = useJs
@@ -265,7 +287,7 @@ async function run() {
 				: targetBrowser
 				? ".js,.jsx,.ts,.tsx"
 				: ".js,.ts";
-			scriptsToAdd.lint = `esw --ext ${extensions} .`;
+			scriptsToAdd.lint = `esw --ext ${extensions} --color .`;
 			scriptsToAdd["lint:fix"] = "npm run lint -- --fix";
 			scriptsToAdd["lint:watch"] = "npm run lint -- -w";
 			const eslintIgnorePath = resolve(cwd, ".eslintignore");
@@ -324,19 +346,26 @@ async function run() {
 
 		// Jest
 		if (tools.includes(constants.jest)) {
-			devDependenciesToInstall.push("jest");
+			devDependenciesToInstall.push("jest", "jest-watch-typeahead");
 			if (useTs) {
 				devDependenciesToInstall.push("@types/jest", "ts-jest");
-				packageJson.jest = {
-					clearMocks: true,
-					preset: "ts-jest",
-					testEnvironment: "node",
-				};
-			} else if (useJs) {
-				packageJson.jest = {
-					clearMocks: true,
-				};
 			}
+			const jestConfig = {
+				clearMocks: true,
+				collectCoverageFrom: [],
+				preset: useTs ? "ts-jest" : undefined,
+				testEnvironment: targetNode ? "node" : undefined,
+				watchPlugins: [
+					"jest-watch-typeahead/filename",
+					"jest-watch-typeahead/testname",
+				],
+			};
+			const jestConfigPath = resolve(cwd, "jest.config.js");
+			fs.outputFileSync(
+				jestConfigPath,
+				`// https://jestjs.io/docs/configuration
+				module.exports = ${JSON.stringify(jestConfig)}`,
+			);
 			scriptsToAdd.test = "jest";
 			scriptsToAdd["test:coverage"] = "npm test -- --coverage";
 			scriptsToAdd["test:watch"] = "npm test -- --watch";
