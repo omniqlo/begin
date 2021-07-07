@@ -1,1 +1,6 @@
-../files/pre-commit
+#!/bin/sh
+
+. "$(dirname "$0")/_/husky.sh"
+
+npm run pkg-ok
+npx lint-staged --verbose

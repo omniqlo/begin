@@ -366,14 +366,14 @@ async function run() {
 				`// https://jestjs.io/docs/configuration
 				module.exports = ${JSON.stringify(jestConfig)}`,
 			);
-			scriptsToAdd.test = "jest";
+			scriptsToAdd.test = "jest --colors";
 			scriptsToAdd["test:coverage"] = "npm test -- --coverage";
 			scriptsToAdd["test:watch"] = "npm test -- --watch";
 		}
 
 		// lint-staged
 		if (tools.includes(constants.lintStaged)) {
-			devDependenciesToInstall.push("lint-staged", "pkg-ok");
+			devDependenciesToInstall.push("lint-staged");
 			const lintstagedConfig = {};
 			if (tools.includes(constants.fixpack)) {
 				lintstagedConfig["package.json"] = "fixpack";
